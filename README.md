@@ -64,10 +64,3 @@ The model outputs:
 - `0` → Not Diabetic
 - `1` → Diabetic
 
----
-
-## 🚀 How to Run the Project
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/lakshita56/diabetes-prediction.git
