@@ -1,30 +1,22 @@
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
-
   const { prompt } = req.body;
-
   try {
-    const apiKey = process.env.VITE_GEMINI_KEY;
-    if (!apiKey) {
-      return res.status(500).json({ error: "API key missing", text: "" });
-    }
-
-    const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-        contents: [{ role: "user", parts: [{ text: prompt }] }],
-        }),
-      }
-    );
-
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.GROQ_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "llama3-8b-8192",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.3
+      }),
+    });
     const data = await response.json();
-    console.log("Gemini raw response:", JSON.stringify(data));
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-    res.status(200).json({ text, debug: data });
-
+    const text = data.choices?.[0]?.message?.content || "";
+    res.status(200).json({ text });
   } catch (e) {
     res.status(500).json({ error: e.message, text: "" });
   }
