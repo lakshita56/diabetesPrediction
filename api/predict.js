@@ -5,7 +5,6 @@ export default async function handler(req, res) {
 
   try {
     const apiKey = process.env.VITE_GEMINI_KEY;
-
     if (!apiKey) {
       return res.status(500).json({ error: "API key missing", text: "" });
     }
@@ -16,7 +15,7 @@ export default async function handler(req, res) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
         }),
       }
     );
